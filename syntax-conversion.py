@@ -8,6 +8,8 @@ import re
 header_space_pattern = re.compile('\\(#[^\\)]*\\)')
 
 for line in fileinput.input():
+    if len(line.strip()) == 0:
+        continue
     # Fix bold difference: Vimwiki uses *bold*, Github uses **bold**
     line = line.replace('*', '**')
     # When we print, we add extra newlines. I don't compose text with two line breaks between paragraphs!
@@ -20,4 +22,9 @@ for line in fileinput.input():
         remaining = remaining[match.end():]
         line += before + target
         match = header_space_pattern.search(remaining)
+    line = line + remaining
+    if line.strip()[0] == '-':
+        line = line.replace('\n', '')
+    if line.strip()[0] == '#':
+        line = '\n' + line
     print(line)
